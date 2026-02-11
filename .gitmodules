@@ -4,3 +4,6 @@
 [submodule "06-nest-heroes-backend-NestJS"]
 	path = 06-nest-heroes-backend-NestJS
 	url = https://github.com/bernar2cl/06-nest-heroes-backend-NestJS.git
+[submodule "10-Calendario-BackEnd-Express-Node"]
+	path = 10-Calendario-BackEnd-Express-Node
+	url = https://github.com/bernar2cl/10-Calendario-BackEnd-Express-Node.git
