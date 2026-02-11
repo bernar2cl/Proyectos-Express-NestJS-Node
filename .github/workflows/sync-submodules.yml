@@ -1,0 +1,45 @@
+name: 🔄 Sync Submodules
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [submodule-updated] # 👈 este evento
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 6 * * *' # Ejecutar todos los días a las 03:00 (hora Chile aprox)
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # 👈 Esto también asegura permisos para push
+
+    steps:
+      - name: Checkout repo (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Print dynamic submodule name
+        run: |
+          SUBMODULE="${{ github.event.client_payload.submodule || 'manual/cron/push' }}"
+          echo "🔄 Sync Submodules — $SUBMODULE"
+
+      - name: Make script executable
+        run: chmod +x ./update-submodules.sh
+
+      - name: Run update-submodules.sh
+        run: ./update-submodules.sh
+
+      - name: Show git status
+        run: git status
